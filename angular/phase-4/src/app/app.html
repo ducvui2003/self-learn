@@ -1,0 +1,15 @@
+<main>
+  <h1>Employee Forms (社員管理)</h1>
+
+  <nav>
+    <button (click)="tab.set('search')" [class.active]="tab() === 'search'">Search + table (検索)</button>
+    <button (click)="tab.set('reactive')" [class.active]="tab() === 'reactive'">Reactive form (登録)</button>
+    <button (click)="tab.set('template')" [class.active]="tab() === 'template'">Template-driven form</button>
+  </nav>
+
+  @switch (tab()) {
+    @case ('search') { <app-employee-search /> }
+    @case ('reactive') { <app-employee-form /> }
+    @case ('template') { <app-template-driven-form /> }
+  }
+</main>

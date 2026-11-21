@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+    <title>Memory Leak</title>
+    <style>
+        .block {
+            display: block;
+        }
+
+        #output {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <button id="btn-add">
+        Create 100 button elements
+    </button>
+    <button id="btn-delete-obj">
+        Delete 100 button elements in obj
+    </button>
+    <button id="btn-delete-ui">
+        Delete 100 button elements in ui
+    </button>
+    <button id="btn-delete">
+        Delete 100 button elements
+    </button>
+    <div>
+        <span>Output</span>
+        <div id="output"></div>
+    </div>
+    <pre>
+
+    </pre>
+    <script>
+        var collection = {
+            el: []
+        }
+        const updateCollectionUI = () => {
+            console.log(collection)
+        }
+        const btnAddEl = document.querySelector('#btn-add');
+        const btnDeleteEl = document.querySelector('#btn-delete');
+        const btnDeleteElObj = document.querySelector('#btn-delete-obj');
+        const btnDeleteElUI = document.querySelector('#btn-delete-ui');
+
+        btnAddEl.addEventListener('click', () => {
+            const output = document.querySelector('#output')
+
+            for (let index = 0; index < 100; index++) {
+                const element = document.createElement('button')
+                element.textContent = `${index}`
+                element.classList.add('block')
+                collection.el.push(element);
+                output.appendChild(element)
+            }
+            updateCollectionUI()
+        })
+        btnDeleteEl.addEventListener('click', () => {
+            collection.el.forEach(child => child.remove());
+            collection.el.length = 0;
+            updateCollectionUI()
+        })
+        btnDeleteElObj.addEventListener('click', () => {
+            collection.el.length = 0;
+            updateCollectionUI();
+        })
+        btnDeleteElUI.addEventListener('click', () => {
+            const output = document.querySelector('#output')
+            Array.from(output.children).forEach(child => child.remove());
+            updateCollectionUI();
+        })
+    </script>
+
+</body>
+
+</html>

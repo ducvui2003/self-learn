@@ -1,0 +1,42 @@
+<main>
+  <!-- 1. Interpolation: {{ }}  (same as AngularJS) -->
+  <h1>Employee Directory (社員名簿)</h1>
+
+  <!-- 2. Event binding: (click). React: onClick. Vue: @click -->
+  <button (click)="increment()">Clicked {{ clicks() }} times</button>
+
+  <!-- 3. Two-way binding: [(ngModel)]. AngularJS: ng-model. Vue: v-model -->
+  <p>
+    <label>Search (検索): <input [(ngModel)]="keyword" placeholder="name..." /></label>
+  </p>
+  <p>
+    <label>
+      <input type="checkbox" [(ngModel)]="showInactive" /> Show inactive (退職者を表示)
+    </label>
+  </p>
+
+  <!-- 4. Property binding: [prop]. Vue: :prop -->
+  <p [hidden]="filtered().length > 0">No result (該当なし)</p>
+
+  <!-- 5. Control flow: @if / @for / @switch (new style) -->
+  @if (filtered().length > 0) {
+    <p>Found {{ filtered().length }} people.</p>
+  } @else {
+    <p>Try another keyword.</p>
+  }
+
+  <!-- @for needs track. React: key. AngularJS: track by -->
+  @for (e of filtered(); track e.id) {
+    <!-- 6. Child component with input binding -->
+    <app-employee-card [employee]="e" />
+  } @empty {
+    <p>The list is empty.</p>
+  }
+
+  <!-- @switch example -->
+  @switch (filtered().length) {
+    @case (0) { <small>Status: none</small> }
+    @case (1) { <small>Status: one</small> }
+    @default { <small>Status: many</small> }
+  }
+</main>

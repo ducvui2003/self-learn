@@ -1,0 +1,40 @@
+<main>
+  <h1>Leave Approval (休暇申請の承認)</h1>
+
+  <!-- computed signals shown in the template -->
+  <p>Pending (未処理): {{ pendingCount() }} | Approved days (承認済み日数): {{ approvedDays() }}</p>
+
+  <!-- Content projection: everything inside <app-panel> goes to <ng-content /> -->
+  <app-panel title="Requests (申請一覧)">
+    <!-- goes to the named slot [actions] -->
+    <span actions>Total: {{ requests().length }}</span>
+
+    @for (r of requests(); track r.id) {
+      <!--
+        [request]   : input  (parent -> child)
+        (approve)   : output (child -> parent)
+        [comment]/(commentChange) : what [(comment)] means (model). Written long so you can see it.
+      -->
+      <app-request-card
+        [request]="r"
+        (approve)="approve($event)"
+        (reject)="reject($event)"
+        [comment]="r.comment"
+        (commentChange)="setComment(r.id, $event)"
+      />
+      @if (r.comment) {
+        <small>Comment saved in parent: "{{ r.comment }}"</small>
+      }
+    }
+  </app-panel>
+
+  <app-panel title="Lifecycle demo (ライフサイクル)">
+    <button actions (click)="toggleDemo()">{{ showDemo() ? 'Destroy' : 'Create' }}</button>
+    @if (showDemo()) {
+      <button (click)="bumpDemo()">Change input</button>
+      <app-lifecycle-demo [value]="demoValue()" />
+    } @else {
+      <p>Click "Create" to see the hooks.</p>
+    }
+  </app-panel>
+</main>

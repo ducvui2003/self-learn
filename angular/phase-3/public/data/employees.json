@@ -1,0 +1,6 @@
+[
+  { "id": 1, "nameEn": "Taro Yamada", "nameJp": "山田 太郎", "department": "Sales", "salary": 450000 },
+  { "id": 2, "nameEn": "Hanako Suzuki", "nameJp": "鈴木 花子", "department": "Engineering", "salary": 520000 },
+  { "id": 3, "nameEn": "Ichiro Tanaka", "nameJp": "田中 一郎", "department": "Engineering", "salary": 610000 },
+  { "id": 4, "nameEn": "Yuki Sato", "nameJp": "佐藤 由紀", "department": "HR", "salary": 400000 }
+]

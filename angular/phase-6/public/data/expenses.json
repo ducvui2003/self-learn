@@ -1,0 +1,7 @@
+[
+  { "id": 1, "employeeJp": "山田 太郎", "employeeEn": "Taro Yamada", "category": "Travel (交通費)", "amount": 12400, "status": "pending" },
+  { "id": 2, "employeeJp": "鈴木 花子", "employeeEn": "Hanako Suzuki", "category": "Books (書籍代)", "amount": 4800, "status": "approved" },
+  { "id": 3, "employeeJp": "田中 一郎", "employeeEn": "Ichiro Tanaka", "category": "Meeting (会議費)", "amount": 9600, "status": "pending" },
+  { "id": 4, "employeeJp": "佐藤 由紀", "employeeEn": "Yuki Sato", "category": "Travel (交通費)", "amount": 31000, "status": "approved" },
+  { "id": 5, "employeeJp": "高橋 健", "employeeEn": "Ken Takahashi", "category": "Meeting (会議費)", "amount": 6500, "status": "rejected" }
+]

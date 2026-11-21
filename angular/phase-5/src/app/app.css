@@ -1,0 +1,4 @@
+header { display: flex; justify-content: space-between; align-items: center; padding: 8px 16px; background: #eef; font-family: sans-serif; }
+nav { display: flex; gap: 16px; }
+a.active { font-weight: bold; text-decoration: none; }
+main { max-width: 720px; margin: 16px auto; font-family: sans-serif; }

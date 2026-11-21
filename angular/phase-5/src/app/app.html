@@ -1,0 +1,22 @@
+<header>
+  <nav>
+    <!-- routerLink: like <Link to> (React) / <RouterLink> (Vue) / ui-sref (AngularJS)
+         routerLinkActive: adds a CSS class when the link matches the URL -->
+    <a routerLink="/employees" routerLinkActive="active">Employees (社員)</a>
+    <a routerLink="/admin" routerLinkActive="active">Admin (管理)</a>
+  </nav>
+  <div>
+    @if (auth.user(); as name) {
+      <span>{{ name }}</span>
+      <!-- custom directive: asks "OK?" and then emits (confirmed) -->
+      <button appConfirm message="Log out? (ログアウトしますか？)" (confirmed)="logout()">Logout</button>
+    } @else {
+      <a routerLink="/login">Login (ログイン)</a>
+    }
+  </div>
+</header>
+
+<main>
+  <!-- The page of the current route is shown here. React: <Outlet />  Vue: <RouterView /> -->
+  <router-outlet />
+</main>

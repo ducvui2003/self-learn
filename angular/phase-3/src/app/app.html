@@ -1,0 +1,39 @@
+<main>
+  <h1>Employee Directory + API (社員名簿)</h1>
+
+  <h2>A. Observable + async pipe</h2>
+  <!-- `as list` keeps the value. null = still loading. -->
+  @if (employees$ | async; as list) {
+    <ul>
+      @for (e of list; track e.id) {
+        <li>{{ e.nameJp }} / {{ e.nameEn }} — {{ e.department }} — {{ e.salary | currency: 'JPY' : 'symbol' : '1.0-0' }}</li>
+      }
+    </ul>
+  } @else {
+    <p>Loading... (読み込み中)</p>
+  }
+
+  <h2>B. Search with RxJS (debounce + switchMap) → signal</h2>
+  <input [(ngModel)]="keyword" placeholder="Search (検索)" />
+  <ul>
+    @for (e of results(); track e.id) {
+      <li>{{ e.nameJp }} / {{ e.nameEn }}</li>
+    } @empty {
+      <li>No result (該当なし)</li>
+    }
+  </ul>
+
+  <h2>C. Error handling</h2>
+  <button (click)="loadBroken()">Call a missing URL</button>
+  @if (errorMessage()) {
+    <p class="error">{{ errorMessage() }}</p>
+  }
+
+  <h2>D. Interceptor log</h2>
+  <button (click)="log.clear()">Clear</button>
+  <div class="log">
+    @for (line of log.lines(); track $index) {
+      <div>{{ line }}</div>
+    }
+  </div>
+</main>

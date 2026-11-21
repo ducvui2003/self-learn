@@ -1,0 +1,25 @@
+<main>
+  <h1>Expense Dashboard (経費精算ダッシュボード)</h1>
+
+  <p>
+    Approved total (承認済合計):
+    <strong>{{ store.approvedTotal() | currency: 'JPY' : 'symbol' : '1.0-0' }}</strong>
+    | Pending (未承認): <strong>{{ store.pendingCount() }}</strong>
+  </p>
+
+  <app-expense-list />
+
+  <!-- @defer: lazy-load a heavy component ONLY when the user interacts with the placeholder.
+       Other triggers: `on viewport`, `on idle`, `when condition()`.
+       React: React.lazy + Suspense.   Vue: defineAsyncComponent. -->
+  @defer (on interaction) {
+    <app-expense-chart />
+  } @placeholder {
+    <button class="defer-btn">Show Category Breakdown Chart (クリックでグラフを読み込む)</button>
+  } @loading (minimum 200ms) {
+    <p>Loading chart...</p>
+  }
+
+  <!-- Legacy NgModule component used inside a modern standalone app -->
+  <app-legacy-notice title="Company Rules — Legacy NgModule (旧スタイル)" />
+</main>

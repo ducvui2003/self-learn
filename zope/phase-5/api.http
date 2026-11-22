@@ -1,0 +1,84 @@
+### Phase 5 — Zope Security (RBAC) + MySQL (SQLAlchemy + zope.sqlalchemy)
+### Click "Send Request" (VS Code REST Client / IntelliJ HTTP Client)
+### Start server first: .\run.bat
+### Optional MySQL mode: set DATABASE_URL=mysql+pymysql://root:pass@127.0.0.1:3306/zope_hr?charset=utf8mb4
+
+@baseUrl = http://127.0.0.1:8080
+
+### 1. Public Health Check (initializes demo users & SQL DB)
+GET {{baseUrl}}/@@api-health
+Accept: application/json
+
+### 2. Unauthenticated Request -> 401 E_UNAUTHORIZED
+GET {{baseUrl}}/@@api-employees
+Accept: application/json
+
+### 3. Check Current User (Viewer role)
+GET {{baseUrl}}/@@api-me
+Authorization: Basic viewer:viewer123
+Accept: application/json
+
+### 4. Viewer Lists Employees -> 200 OK (Viewer role is allowed to read)
+GET {{baseUrl}}/@@api-employees
+Authorization: Basic viewer:viewer123
+Accept: application/json
+
+### 5. Viewer Tries to Create Employee -> 403 E_FORBIDDEN!
+POST {{baseUrl}}/@@api-employees
+Authorization: Basic viewer:viewer123
+Content-Type: application/json
+
+{
+  "empCode": "EMP-0007",
+  "nameEn": "Blocked User",
+  "nameJa": "ブロックテスト",
+  "departmentEn": "Sales",
+  "departmentJa": "営業部",
+  "role": "Staff",
+  "email": "blocked@example.co.jp"
+}
+
+### 6. HRManager Creates Employee -> 201 Created (writes employees + audit_logs in ONE SQL tx!)
+POST {{baseUrl}}/@@api-employees
+Authorization: Basic hr_manager:hr123
+Content-Type: application/json
+
+{
+  "empCode": "EMP-0007",
+  "nameEn": "Sora Fujimoto",
+  "nameJa": "藤本 空",
+  "departmentEn": "Engineering",
+  "departmentJa": "開発部",
+  "role": "Database Engineer",
+  "email": "s.fujimoto@example.co.jp"
+}
+
+### 7. Two-Phase SQL Transaction Rollback Demo (?simulateError=true -> 500, neither table saved!)
+POST {{baseUrl}}/@@api-employees?simulateError=true
+Authorization: Basic hr_manager:hr123
+Content-Type: application/json
+
+{
+  "empCode": "EMP-9999",
+  "nameEn": "SQL Rollback",
+  "nameJa": "ロールバック",
+  "departmentEn": "QA",
+  "departmentJa": "品質保証部",
+  "role": "Tester",
+  "email": "sqlrb@example.co.jp"
+}
+
+### 8. HRManager Reads SQL Audit Logs -> 200 OK (shows EMP-0007 created, NO EMP-9999!)
+GET {{baseUrl}}/@@api-audit-logs
+Authorization: Basic hr_manager:hr123
+Accept: application/json
+
+### 9. Viewer Tries to Read Audit Logs -> 403 E_FORBIDDEN!
+GET {{baseUrl}}/@@api-audit-logs
+Authorization: Basic viewer:viewer123
+Accept: application/json
+
+### 10. HRManager Soft-Deletes EMP-0007 -> 200 OK (updates deleted_flg + writes audit_logs)
+DELETE {{baseUrl}}/@@api-employees/EMP-0007
+Authorization: Basic hr_manager:hr123
+Accept: application/json

@@ -1,0 +1,9 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <!-- Load standard Zope 5 core configuration -->
+  <include package="Products.Five" />
+
+  <!-- Load our REST API package (like Spring @ComponentScan) -->
+  <include package="employee_api" />
+
+</configure>

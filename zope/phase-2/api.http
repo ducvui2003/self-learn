@@ -1,0 +1,82 @@
+### Phase 2 — ZODB, Persistence, ACID Transactions & Acquisition
+### Click "Send Request" (VS Code REST Client / IntelliJ HTTP Client)
+### Start server first: .\run.bat
+
+@baseUrl = http://127.0.0.1:8080
+
+### 1. Health Check (shows ZODB store & count in Data.fs)
+GET {{baseUrl}}/api-health
+Accept: application/json
+
+### 2. List Active Employees from ZODB OOBTree
+GET {{baseUrl}}/api-employees
+Accept: application/json
+
+### 3. Get Single Employee + Acquisition Demo (company_name inherited from EmployeeFolder)
+GET {{baseUrl}}/api-employees/EMP-0001
+Accept: application/json
+
+### 4. Create New Employee in ZODB (auto-committed to var/Data.fs, survives server restart!)
+POST {{baseUrl}}/api-employees
+Content-Type: application/json
+
+{
+  "empCode": "EMP-0004",
+  "nameEn": "Daiki Takahashi",
+  "nameJa": "高橋 大樹",
+  "departmentEn": "Engineering",
+  "departmentJa": "開発部",
+  "role": "Backend Engineer",
+  "email": "d.takahashi@example.co.jp",
+  "skills": ["Java", "Spring Boot", "MySQL"]
+}
+
+### 5. Duplicate Employee Error (409 Conflict)
+POST {{baseUrl}}/api-employees
+Content-Type: application/json
+
+{
+  "empCode": "EMP-0004",
+  "nameEn": "Daiki Takahashi",
+  "nameJa": "高橋 大樹",
+  "departmentEn": "Engineering",
+  "departmentJa": "開発部",
+  "role": "Backend Engineer",
+  "email": "d.takahashi@example.co.jp"
+}
+
+### 6. ACID Transaction Rollback Demo (returns 500 and does NOT save EMP-9999 to ZODB)
+POST {{baseUrl}}/api-employees?simulateError=true
+Content-Type: application/json
+
+{
+  "empCode": "EMP-9999",
+  "nameEn": "Rollback Test",
+  "nameJa": "ロールバックテスト",
+  "departmentEn": "QA",
+  "departmentJa": "品質保証部",
+  "role": "Tester",
+  "email": "rollback@example.co.jp"
+}
+
+### 7. Verify EMP-9999 was Rolled Back (expect 404 Not Found)
+GET {{baseUrl}}/api-employees/EMP-9999
+Accept: application/json
+
+### 8. PersistentList Mutation Demo (add skill to EMP-0004 and persist in ZODB)
+POST {{baseUrl}}/api-employees/EMP-0004/skills
+Content-Type: application/json
+
+{
+  "skill": "Zope 5"
+}
+
+### 9. Soft Delete Employee (sets deletedFlg = true in ZODB)
+### Note: Zope treats DELETE/PUT on plain folder paths as WebDAV by default.
+### Prefixing the view with "@@" bypasses WebDAV and routes straight to BrowserView!
+DELETE {{baseUrl}}/@@api-employees/EMP-0004
+Accept: application/json
+
+### 10. List Including Soft-Deleted Employees (?includeDeleted=true)
+GET {{baseUrl}}/api-employees?includeDeleted=true
+Accept: application/json

@@ -1,0 +1,52 @@
+### Phase 3 — ZCA (Interfaces, Utilities, Adapters, Events & Subscribers)
+### Click "Send Request" (VS Code REST Client / IntelliJ HTTP Client)
+### Start server first: .\run.bat
+
+@baseUrl = http://127.0.0.1:8080
+
+### 1. Health Check (shows wired ZCA Utilities: EmployeeService & AuditLogUtility)
+GET {{baseUrl}}/api-health
+Accept: application/json
+
+### 2. List Employees (uses IEmployeeService Utility + IEmployeeSerializer Adapter summary)
+GET {{baseUrl}}/api-employees
+Accept: application/json
+
+### 3. Get Single Employee (uses IEmployeeSerializer Adapter full view)
+GET {{baseUrl}}/api-employees/EMP-0001
+Accept: application/json
+
+### 4. Create Employee -> fires IEmployeeCreatedEvent -> Subscriber logs to AuditLogUtility!
+POST {{baseUrl}}/api-employees
+Content-Type: application/json
+
+{
+  "empCode": "EMP-0005",
+  "nameEn": "Ren Kobayashi",
+  "nameJa": "小林 蓮",
+  "departmentEn": "Engineering",
+  "departmentJa": "開発部",
+  "role": "Platform Engineer",
+  "email": "r.kobayashi@example.co.jp",
+  "skills": ["Python", "ZCA", "MySQL"]
+}
+
+### 5. Check Audit Logs -> verify EMPLOYEE_CREATED event was captured automatically!
+GET {{baseUrl}}/api-audit-logs
+Accept: application/json
+
+### 6. Soft Delete Employee -> fires IEmployeeDeletedEvent -> Subscriber logs it!
+DELETE {{baseUrl}}/@@api-employees/EMP-0005
+Accept: application/json
+
+### 7. Check Audit Logs again -> see both EMPLOYEE_DELETED and EMPLOYEE_CREATED!
+GET {{baseUrl}}/api-audit-logs
+Accept: application/json
+
+### 8. Validation Error (400 E_VALIDATION from EmployeeService)
+POST {{baseUrl}}/api-employees
+Content-Type: application/json
+
+{
+  "empCode": "EMP-0006"
+}

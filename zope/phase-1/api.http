@@ -1,0 +1,37 @@
+### Phase 1 — Zope 5 REST API Test Requests
+### Click "Send Request" (VS Code REST Client or IntelliJ HTTP Client)
+### Make sure Zope is running first: runwsgi etc/zope.ini
+
+@baseUrl = http://127.0.0.1:8080
+
+### 1. Health Check (Happy Path)
+GET {{baseUrl}}/api-health
+Accept: application/json
+
+### 2. List All Employees (Happy Path)
+GET {{baseUrl}}/api-employees
+Accept: application/json
+
+### 3. Filter Employees by Department (English query param)
+GET {{baseUrl}}/api-employees?dept=Engineering
+Accept: application/json
+
+### 4. Filter Employees by Department (Japanese query param: 営業部 = Sales)
+GET {{baseUrl}}/api-employees?dept=営業部
+Accept: application/json
+
+### 5. Get Single Employee via Traversal (Happy Path)
+GET {{baseUrl}}/api-employees/EMP-0001
+Accept: application/json
+
+### 6. Get Non-Existent Employee (404 Error Envelope)
+GET {{baseUrl}}/api-employees/EMP-9999
+Accept: application/json
+
+### 7. Invalid Extra Path Segment (404 Error Envelope)
+GET {{baseUrl}}/api-employees/EMP-0001/extra
+Accept: application/json
+
+### 8. Open ZMI (Zope Management Interface — requires admin Basic Auth)
+# GET {{baseUrl}}/manage
+# Authorization: Basic admin:admin

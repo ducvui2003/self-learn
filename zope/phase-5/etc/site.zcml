@@ -1,0 +1,9 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <!-- Load standard Zope 5 core configuration -->
+  <include package="Products.Five" />
+
+  <!-- Load our Phase 5 Security + MySQL REST API package -->
+  <include package="employee_api" />
+
+</configure>

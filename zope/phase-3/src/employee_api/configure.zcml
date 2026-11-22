@@ -1,0 +1,67 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser">
+
+  <!--
+    1. UTILITIES (Spring equivalent: @Service / @Bean singletons)
+    Registered once at startup; looked up via getUtility(IEmployeeService).
+  -->
+  <utility
+      provides=".interfaces.IEmployeeService"
+      factory=".services.EmployeeService"
+      />
+
+  <utility
+      provides=".interfaces.IAuditLogUtility"
+      factory=".services.AuditLogUtility"
+      />
+
+  <!--
+    2. ADAPTERS (Spring equivalent: Converter<Employee, EmployeeDto> / Mapper)
+    Allows calling `IEmployeeSerializer(employee)` anywhere in the codebase.
+  -->
+  <adapter
+      for=".interfaces.IEmployee"
+      provides=".interfaces.IEmployeeSerializer"
+      factory=".adapters.EmployeeJsonSerializer"
+      />
+
+  <!--
+    3. EVENT SUBSCRIBERS (Spring equivalent: @EventListener)
+    Automatically triggered when `zope.event.notify(...)` is called.
+  -->
+  <subscriber
+      for=".interfaces.IEmployeeCreatedEvent"
+      handler=".subscribers.on_employee_created"
+      />
+
+  <subscriber
+      for=".interfaces.IEmployeeDeletedEvent"
+      handler=".subscribers.on_employee_deleted"
+      />
+
+  <!--
+    4. BROWSER VIEWS (Spring equivalent: @RestController)
+  -->
+  <browser:page
+      name="api-health"
+      for="OFS.interfaces.IApplication"
+      class=".views.HealthApiView"
+      permission="zope2.View"
+      />
+
+  <browser:page
+      name="api-employees"
+      for="OFS.interfaces.IApplication"
+      class=".views.EmployeesApiView"
+      permission="zope2.View"
+      />
+
+  <browser:page
+      name="api-audit-logs"
+      for="OFS.interfaces.IApplication"
+      class=".views.AuditLogsApiView"
+      permission="zope2.View"
+      />
+
+</configure>

@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "employee-api"
+version = "0.1.0"
+description = "Phase 1: Zope 5 foundations and first REST JSON API"
+requires-python = ">=3.10,<3.14"
+dependencies = [
+    "Zope[wsgi]>=5.13,<6.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]

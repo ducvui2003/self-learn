@@ -1,0 +1,42 @@
+### Phase 6 — Indexed Search, Structured Request Logging & Production Probes
+### Click "Send Request" (VS Code REST Client / IntelliJ HTTP Client)
+### Start server: .\run.bat   |   Run pytest suite: .\test.bat
+
+@baseUrl = http://127.0.0.1:8080
+
+### 1. Production Health Probe (check X-Request-Id response header + server access log)
+GET {{baseUrl}}/@@api-health
+X-Request-Id: demo-health-001
+Accept: application/json
+
+### 2. Fast Indexed Search by Department + Skill (B-Tree intersection, O(log N))
+GET {{baseUrl}}/@@api-employees?dept=Engineering&skill=MySQL
+X-Request-Id: demo-search-002
+Accept: application/json
+
+### 3. Fast Indexed Search by Skill Only
+GET {{baseUrl}}/@@api-employees?skill=Zope
+Accept: application/json
+
+### 4. Create & Auto-Index New Employee
+POST {{baseUrl}}/@@api-employees
+Content-Type: application/json
+
+{
+  "empCode": "EMP-0010",
+  "nameEn": "Kaito Mori",
+  "nameJa": "森 海斗",
+  "departmentEn": "Engineering",
+  "departmentJa": "開発部",
+  "role": "SRE",
+  "skills": ["Nginx", "Gunicorn", "MySQL"]
+}
+
+### 5. Search Newly Indexed Skill Immediately
+GET {{baseUrl}}/@@api-employees?skill=Nginx
+Accept: application/json
+
+### 6. 404 Not Found with X-Request-Id
+GET {{baseUrl}}/@@api-employees/EMP-9999
+X-Request-Id: demo-404-003
+Accept: application/json

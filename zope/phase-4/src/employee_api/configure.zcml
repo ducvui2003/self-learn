@@ -1,0 +1,16 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser">
+
+  <!--
+    Full REST API Dispatcher (handles GET, POST, PUT, PATCH, DELETE, OPTIONS).
+    Use /@@api-employees (with @@) so PUT/PATCH/DELETE bypass Zope's WebDAV handler.
+  -->
+  <browser:page
+      name="api-employees"
+      for="OFS.interfaces.IApplication"
+      class=".rest.employees.EmployeesRestView"
+      permission="zope2.View"
+      />
+
+</configure>

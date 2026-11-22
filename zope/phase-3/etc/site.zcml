@@ -1,0 +1,9 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <!-- Load standard Zope 5 core configuration -->
+  <include package="Products.Five" />
+
+  <!-- Load our Phase 3 ZCA REST API package -->
+  <include package="employee_api" />
+
+</configure>

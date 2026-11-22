@@ -1,0 +1,35 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser">
+
+  <!--
+    ZCML (Zope Configuration Markup Language) wires views to objects.
+    Spring equivalent: @RestController + @RequestMapping registration.
+
+    for="OFS.interfaces.IApplication" means this view is attached to the
+    Zope root object ("/"). So name="api-health" is served at:
+      GET http://127.0.0.1:8080/api-health
+
+    permission="zope2.View" allows public read access (like permitAll() in Spring Security).
+  -->
+  <browser:page
+      name="api-health"
+      for="OFS.interfaces.IApplication"
+      class=".views.HealthApiView"
+      permission="zope2.View"
+      />
+
+  <!--
+    Served at:
+      GET http://127.0.0.1:8080/api-employees
+      GET http://127.0.0.1:8080/api-employees?dept=Engineering
+      GET http://127.0.0.1:8080/api-employees/EMP-0001   (handled via IPublishTraverse)
+  -->
+  <browser:page
+      name="api-employees"
+      for="OFS.interfaces.IApplication"
+      class=".views.EmployeesApiView"
+      permission="zope2.View"
+      />
+
+</configure>

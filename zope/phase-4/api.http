@@ -1,0 +1,90 @@
+### Phase 4 — REST API Deep Dive (GET/POST/PUT/PATCH/DELETE Dispatcher, Validation, CORS, Pagination, Error Handling)
+### Click "Send Request" (VS Code REST Client / IntelliJ HTTP Client)
+### Start server first: .\run.bat
+### Note: Using /@@api-employees bypasses Zope's WebDAV handler so PUT/PATCH/DELETE work cleanly!
+
+@baseUrl = http://127.0.0.1:8080
+
+### 1. List with Pagination + Sorting (page 1, size 2, sorted by nameEn)
+GET {{baseUrl}}/@@api-employees?page=1&size=2&sort=nameEn&order=asc
+Accept: application/json
+
+### 2. Search + Filter (?q=zope&dept=Engineering)
+GET {{baseUrl}}/@@api-employees?q=tanaka&dept=Engineering
+Accept: application/json
+
+### 3. Get Single Employee (shows version=1 for optimistic locking)
+GET {{baseUrl}}/@@api-employees/EMP-0001
+Accept: application/json
+
+### 4. Create Employee (201 Created)
+POST {{baseUrl}}/@@api-employees
+Content-Type: application/json
+
+{
+  "empCode": "EMP-0006",
+  "nameEn": "Miyu Nakamura",
+  "nameJa": "中村 美優",
+  "departmentEn": "QA",
+  "role": "QA Lead",
+  "email": "m.nakamura@example.co.jp",
+  "skills": ["Playwright", "API Testing"]
+}
+
+### 5. Validation Error Demo (400 E_VALIDATION with field-level details list)
+POST {{baseUrl}}/@@api-employees
+Content-Type: application/json
+
+{
+  "empCode": "BAD-CODE",
+  "nameEn": "",
+  "departmentEn": "UnknownDept",
+  "email": "not-an-email"
+}
+
+### 6. Full Update via PUT with Optimistic Locking (version: 1 -> becomes version: 2)
+PUT {{baseUrl}}/@@api-employees/EMP-0006
+Content-Type: application/json
+
+{
+  "version": 1,
+  "nameEn": "Miyu Nakamura",
+  "nameJa": "中村 美優",
+  "departmentEn": "Engineering",
+  "role": "Senior QA Automation Engineer",
+  "email": "m.nakamura@example.co.jp",
+  "skills": ["Playwright", "Python", "Zope"]
+}
+
+### 7. Optimistic Lock Conflict Demo (sending stale version: 1 -> 409 E_VERSION_CONFLICT!)
+PUT {{baseUrl}}/@@api-employees/EMP-0006
+Content-Type: application/json
+
+{
+  "version": 1,
+  "nameEn": "Miyu Nakamura",
+  "nameJa": "中村 美優",
+  "departmentEn": "Engineering",
+  "role": "Stale Update",
+  "email": "m.nakamura@example.co.jp"
+}
+
+### 8. Partial Update via PATCH (only update role, version becomes 3)
+PATCH {{baseUrl}}/@@api-employees/EMP-0006
+Content-Type: application/json
+
+{
+  "role": "QA Manager"
+}
+
+### 9. Soft Delete via DELETE (deletedFlg = true)
+DELETE {{baseUrl}}/@@api-employees/EMP-0006
+Accept: application/json
+
+### 10. CORS Preflight Check (OPTIONS -> 204 No Content + Access-Control-Allow-* headers)
+OPTIONS {{baseUrl}}/@@api-employees
+Origin: http://localhost:4200
+
+### 11. Global 500 JSON Error Handler Demo (?crash=true -> returns clean JSON, never HTML!)
+GET {{baseUrl}}/@@api-employees?crash=true
+Accept: application/json

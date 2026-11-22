@@ -1,0 +1,19 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser">
+
+  <browser:page
+      name="api-health"
+      for="OFS.interfaces.IApplication"
+      class=".views.HealthApiView"
+      permission="zope2.View"
+      />
+
+  <browser:page
+      name="api-employees"
+      for="OFS.interfaces.IApplication"
+      class=".views.IndexedEmployeesApiView"
+      permission="zope2.View"
+      />
+
+</configure>

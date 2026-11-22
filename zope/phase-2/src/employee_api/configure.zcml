@@ -1,0 +1,29 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser">
+
+  <!-- GET /api-health -->
+  <browser:page
+      name="api-health"
+      for="OFS.interfaces.IApplication"
+      class=".views.HealthApiView"
+      permission="zope2.View"
+      />
+
+  <!--
+    Handles:
+      GET    /api-employees
+      POST   /api-employees
+      POST   /api-employees?simulateError=true   (ACID rollback demo)
+      GET    /api-employees/{empCode}            (includes Acquisition demo)
+      POST   /api-employees/{empCode}/skills     (PersistentList mutation demo)
+      DELETE /api-employees/{empCode}            (soft delete: deleted_flg=True)
+  -->
+  <browser:page
+      name="api-employees"
+      for="OFS.interfaces.IApplication"
+      class=".views.EmployeesApiView"
+      permission="zope2.View"
+      />
+
+</configure>

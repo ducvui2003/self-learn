@@ -1,0 +1,39 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser">
+
+  <!--
+    Note: We set permission="zope2.View" on the REST views so our BaseSecuredJsonView
+    can return clean JSON 401/403 responses instead of Zope's default HTML login redirect.
+    In traditional Zope views, you can also enforce permissions directly here in ZCML
+    (e.g. permission="cmf.ManagePortal" or custom <permission id="employee.Manage" />).
+  -->
+  <browser:page
+      name="api-health"
+      for="OFS.interfaces.IApplication"
+      class=".views.HealthApiView"
+      permission="zope2.View"
+      />
+
+  <browser:page
+      name="api-me"
+      for="OFS.interfaces.IApplication"
+      class=".views.MeApiView"
+      permission="zope2.View"
+      />
+
+  <browser:page
+      name="api-employees"
+      for="OFS.interfaces.IApplication"
+      class=".views.EmployeesSqlApiView"
+      permission="zope2.View"
+      />
+
+  <browser:page
+      name="api-audit-logs"
+      for="OFS.interfaces.IApplication"
+      class=".views.AuditLogsSqlApiView"
+      permission="zope2.View"
+      />
+
+</configure>
